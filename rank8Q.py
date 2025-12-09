@@ -177,8 +177,7 @@ def main():
     dfFiltered['Date'] = (dfFiltered['Date'].str.replace('-','')).astype(int)
     # print(dfFiltered)
 
-    ## 
-    ## set start/end dates = input def
+    ## set start/end dates = start/end dates input defs
     startDate=startDateIn()
     endDate=endDateIn()
     ## check for start/end date user input
@@ -204,7 +203,20 @@ def main():
     # night, files, hours data
     # """
 
-
+    ## set values = inputs and reduce df to those values if there is an input
+    hvVal=hvValIn()
+    if hvVal != 0:
+        dfFiltered = dfFiltered[dfFiltered['hvValues1'] == hvVal]
+    hvCurr=hvCurrIn()
+    if hvCurr != 0:
+        dfFiltered = dfFiltered[dfFiltered['hvCurrents1'] == hvCurr]
+    sunAlt=sunAltIn()
+    if sunAlt != 0:
+        dfFiltered = dfFiltered[dfFiltered['sunAltitude'] == sunAlt]
+    moonAlt=moonAltIn()
+    if moonAlt != 0:
+        dfFiltered = dfFiltered[dfFiltered['moonAltitude'] == moonAlt]
+    
     dfFiltered['OpMode'] = dfMerged['OpMode']
     opmode = dfFiltered['OpMode']
     # print(opmode)
