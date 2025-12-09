@@ -48,6 +48,11 @@ def endDate():
   print(endDate)
   return endDate
 
+def dORf():
+  thing=input(color.RED + "date or file" + color.END)
+  print(thing)
+  return thing
+
 def inputhvValues():
     # user input
     hvVal=input(color.RED + "hvValues1:" + color.END)
@@ -125,7 +130,7 @@ def nightData(dates):
     door_open_files = len(door_open_data)
     # nightly door closed data
     door_closed_data = day_data[day_data['OpMode'] == 3]
-    door_closed_files: int = len(door_closed_data)
+    door_closed_files = len(door_closed_data)
     # nightly ext moon data
     extmoon_data = day_data[day_data['OpMode'] == 2]
     extmoon_files = len(extmoon_data)
