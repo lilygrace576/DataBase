@@ -169,18 +169,8 @@ def main():
     dfMerged['sunAltitude'] = dfMerged['sunAltitude'].astype(float)
     dfMerged['moonAltitude'] = dfMerged['moonAltitude'].astype(float)
 
-    # # with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', None, 'display.max_colwidth', None):
-    # print(dfMerged)
-
-
-    # reduce the data by removing the rows where the ranking is not 8, and HVvalues are not 44
-    # check for data that is contains "44."
-    # in the future have it be that it loops through all the hvVlues and then uses that to get check for the dict value
-
-    dfFiltered = dfMerged[(dfMerged['Ranking'] == 8)] # & (dfMerged['hvValues1'] >= 43.95) & (dfMerged['hvcurrents1'] >= dict_doorClosed[44.0]) & (dfMerged['hvcurrents1'] <= 12.0)]
+    dfFiltered = dfMerged[(dfMerged['Ranking'] == 8)]
     # print(dfFiltered)
-
-    # with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', None, 'display.max_colwidth', None):
 
     # create a new column with the data from the filename column so that it is yyyy-mm-dd
     dfFiltered['Date'] = (pd.to_datetime(dfFiltered['Filename'].str[12:22])).astype(str)
