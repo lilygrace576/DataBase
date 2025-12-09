@@ -253,8 +253,6 @@ def main():
   else:
     dfFiltered = dfFiltered[dfFiltered['Date'] <= endDate]
 
-  unique_dates = dfFiltered['Date'].unique()
-
   hvVal = inputhvValues()
   
   if hvVal != "":
@@ -274,6 +272,8 @@ def main():
   
   if moonAlt != "":
     dfFiltered = dfFiltered[(dfFiltered['moonAltitude'] == moonAlt)]
+
+  unique_dates = dfFiltered['Date'].unique()
 
   opMode = inputOpmode()
   opmode = dfFiltered['OpMode']
