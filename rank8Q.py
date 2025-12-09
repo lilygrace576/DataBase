@@ -177,9 +177,21 @@ def main():
     dfFiltered['Date'] = (dfFiltered['Date'].str.replace('-','')).astype(int)
     # print(dfFiltered)
 
-    dfFiltered = dfFiltered[dfFiltered['Date'] >= 20250101]
-    dfFiltered = dfFiltered[dfFiltered['Date'] <= 20251211]
+    ## 
+    ## set start/end dates = input def
+    startDate=startDateIn()
+    endDate=endDateIn()
+    ## check for start/end date user input
+    if startDate != "":
+        dfFiltered = dfFiltered[dfFiltered['Date'] >= startDate]
+    else:
+        dfFiltered = dfFiltered[dfFiltered['Date'] >= 20250101]
+    if endDate != "":
+        dfFiltered = dfFiltered[dfFiltered['Date'] >= endDate]
+    else:
+        dfFiltered = dfFiltered[dfFiltered['Date'] >= 20251231]
     # print(dfFiltered)
+    ##
 
     # """ 
     # create 1 csv file  start with 
