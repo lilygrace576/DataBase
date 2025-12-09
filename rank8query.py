@@ -273,6 +273,7 @@ def main():
   if moonAlt != "":
     dfFiltered = dfFiltered[(dfFiltered['moonAltitude'] == moonAlt)]
 
+  
   unique_dates = dfFiltered['Date'].unique()
 
   opMode = inputOpmode()
