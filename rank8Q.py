@@ -89,12 +89,98 @@ def doorIn():
 
 ##
 
-# Local host lines for access
-host = 'localhost'
-port = 8086
-username = 'admin'
-database = 'TDFiles'
-password = 'Ttys@210'
+def main():
+    # Local host lines for access
+    host = 'localhost'
+    port = 8086
+    username = 'admin'
+    database = 'TDFiles'
+    password = 'Ttys@210'
+
+    # Initialize the InfluxDB client and write the points in batches
+    client = InfluxDBClient(host = host, port=port, username=username, password=password)
+
+    # Switch to the database
+    client.switch_database(database)
+
+    result = client.query(f'SELECT "Filename","ranking","OpMode" FROM "RankingInfo"')
+
+    Filename = []
+    Ranking = []
+    OpMode = []
+
+    for point in result.get_points():
+        Filename.append(point['Filename'])
+        Ranking.append(point['ranking'])
+        OpMode.append(point['OpMode'])
+
+    data = np.array([Filename, Ranking, OpMode]).T
+    #print(data)
+
+    # Create a DataFrame from the array
+    dfRanking = pd.DataFrame(data, columns=['Filename', 'Ranking', 'OpMode'])
+    # print(dfRanking)
+
+
+    result = client.query(f'SELECT "hvValues1", "hvcurrents1", "Filename" FROM "DataInfo"')
+
+
+    hvValues1 = []
+    hvcurrents1 = []
+    Filename = []
+
+    for point in result.get_points():
+        hvValues1.append(point['hvValues1'])
+        hvcurrents1.append(point['hvcurrents1'])
+        Filename.append(point['Filename'])
+
+    data = np.array([hvValues1, hvcurrents1, Filename]).T
+    # print(data)
+    # Create a DataFrame from the array
+    dfData = pd.DataFrame(data, columns=['hvValues1', 'hvcurrents1', 'Filename'])
+    # print(dfData)
+
+    result = client.query(f'SELECT "sunAltitude", "moonAltitude", "Filename" FROM "CelestialInfo"')
+
+    sunAltitude = []
+    moonAltitude = []
+    Filename = []
+    for point in result.get_points():
+        sunAltitude.append(point['sunAltitude'])
+        moonAltitude.append(point['moonAltitude'])
+        Filename.append(point['Filename'])
+
+    data = np.array([sunAltitude, moonAltitude, Filename]).T
+    #print(data)
+    # Create a DataFrame from the array
+    dfCelestial = pd.DataFrame(data, columns=['sunAltitude', 'moonAltitude', 'Filename'])
+    # print(dfCelestial)
+
+    # Merge the DataFrames on 'Filename'
+    dfMerged = pd.merge(dfRanking, dfData, on='Filename')
+    dfMerged = pd.merge(dfMerged, dfCelestial, on='Filename')
+
+    dfMerged['Ranking'] = pd.to_numeric(dfMerged['Ranking'], errors='coerce')
+    dfMerged['Ranking'] = dfMerged['Ranking'].fillna(0).astype(int) 
+    dfMerged['OpMode'] = pd.to_numeric(dfMerged['OpMode'], errors='coerce')
+    dfMerged['OpMode'] = dfMerged['OpMode'].fillna(0).astype(int) 
+    dfMerged['hvValues1'] = dfMerged['hvValues1'].astype(float)
+    dfMerged['hvcurrents1'] = dfMerged['hvcurrents1'].astype(float)
+    dfMerged['sunAltitude'] = dfMerged['sunAltitude'].astype(float)
+    dfMerged['moonAltitude'] = dfMerged['moonAltitude'].astype(float)
+
+    # # with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', None, 'display.max_colwidth', None):
+    # print(dfMerged)
+
+
+    # reduce the data by removing the rows where the ranking is not 8, and HVvalues are not 44
+    # check for data that is contains "44."
+    # in the future have it be that it loops through all the hvVlues and then uses that to get check for the dict value
+
+    dfFiltered = dfMerged[(dfMerged['Ranking'] == 8)] # & (dfMerged['hvValues1'] >= 43.95) & (dfMerged['hvcurrents1'] >= dict_doorClosed[44.0]) & (dfMerged['hvcurrents1'] <= 12.0)]
+    # print(dfFiltered)
+
+    # with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', None, 'display.max_colwidth', None):
 
     # create a new column with the data from the filename column so that it is yyyy-mm-dd
     dfFiltered['Date'] = (pd.to_datetime(dfFiltered['Filename'].str[12:22])).astype(str)
