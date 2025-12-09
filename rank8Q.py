@@ -17,13 +17,26 @@ import argparse
 from scipy import stats
 import csv
 
+##
+import os
+import csv
+import numpy as np
+from datetime import datetime, timedelta
+import pandas as pd
+import time
+import pytz
 
-# to be able in the future to be able to use different bias voltages we will need to create a dictionary for different votage levels
-
-# Create a dictionary to hold the bias voltage data for when the door is closed
-# Bias voltages for door closed: SiPM current with door closed @ that bias voltage
-dict_doorClosed = {44.0:3.6, 43.5:3.0, 43.0:3.0, 42.5:3.0, 42.0:3.0}
-
+class color:
+   PURPLE = '\033[95m'
+   CYAN = '\033[96m'
+   DARKCYAN = '\033[36m'
+   BLUE = '\033[94m'
+   GREEN = '\033[92m'
+   YELLOW = '\033[93m'
+   RED = '\033[91m'
+   BOLD = '\033[1m'
+   UNDERLINE = '\033[4m'
+   END = '\033[0m'
 ##
 
 # Local host lines for access
@@ -188,16 +201,6 @@ for i in opmode:
         else:
             intrigs_hours = 0
 
-# print(total_weird_data)
-# print(weird_hours)
-# print(total_intrigs_data)
-# print(intrigs_hours)
-# print(total_open_data)
-# print(open_hours)
-# print(total_extmoon_data)
-# print(total_extmoon_hours)
-# print(total_closed_data)
-# print(closed_hours)
 
 # create a txt file
 with open('rank8Files.txt', mode='w', newline='') as file:
