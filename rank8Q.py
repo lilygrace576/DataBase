@@ -24,6 +24,7 @@ import csv
 # Bias voltages for door closed: SiPM current with door closed @ that bias voltage
 dict_doorClosed = {44.0:3.6, 43.5:3.0, 43.0:3.0, 42.5:3.0, 42.0:3.0}
 
+##
 
 # Local host lines for access
 host = 'localhost'
