@@ -125,7 +125,7 @@ def nightData(dates):
     door_open_files = len(door_open_data)
     # nightly door closed data
     door_closed_data = day_data[day_data['OpMode'] == 3]
-    door_closed_files = len(door_closed_data)
+    door_closed_files: int = len(door_closed_data)
     # nightly ext moon data
     extmoon_data = day_data[day_data['OpMode'] == 2]
     extmoon_files = len(extmoon_data)
@@ -286,8 +286,7 @@ def main():
 
   door = inputDoor()
   if door != "":
-    file.write(f"Door position: {door} \n")
-    file.write(f"{date} \n")
+     
 
 
 
