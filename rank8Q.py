@@ -86,9 +86,6 @@ def doorIn():
     return door
 
 
-
-##
-
 def main():
     # Local host lines for access
     host = 'localhost'
@@ -186,9 +183,9 @@ def main():
     else:
         dfFiltered = dfFiltered[dfFiltered['Date'] >= 20250101]
     if endDate != "":
-        dfFiltered = dfFiltered[dfFiltered['Date'] >= endDate]
+        dfFiltered = dfFiltered[dfFiltered['Date'] <= endDate]
     else:
-        dfFiltered = dfFiltered[dfFiltered['Date'] >= 20251231]
+        dfFiltered = dfFiltered[dfFiltered['Date'] <= 20251231]
     # print(dfFiltered)
     ##
     dfFiltered['OpMode'] = dfMerged['OpMode']
@@ -215,23 +212,23 @@ def main():
         if datatype == "files":
             file.write("listing files")
             hvVal=hvValIn()
-            if hvVal != 0:
+            if hvVal != "":
                 file.write(f"hvValues = {hvVal} \n")
                 dfFiltered = dfFiltered[dfFiltered['hvValues1'] == hvVal]
             hvCurr=hvCurrIn()
-            if hvCurr != 0:
+            if hvCurr != "":
                 file.write(f"hvCurrents = {hvCurr} \n")
                 dfFiltered = dfFiltered[dfFiltered['hvCurrents1'] == hvCurr]
             sunAlt=sunAltIn()
-            if sunAlt != 0:
+            if sunAlt != "":
                 file.write(f"sun altitude = {sunAlt} \n")
                 dfFiltered = dfFiltered[dfFiltered['sunAltitude'] == sunAlt]
             moonAlt=moonAltIn()
-            if moonAlt != 0:
+            if moonAlt != "":
                 file.write(f"moon altitude = {moonAlt} \n")
                 dfFiltered = dfFiltered[dfFiltered['moonAltitude'] == moonAlt]
             op=opModeIn()
-            if op != 0:
+            if op != "":
                 file.write(f"operation mode = {op} \n")
                 dfFiltered = dfFiltered[opmode == op]
             file.write(f"Total Days: {len(dfFiltered['Date'].unique())} days \n")
@@ -240,7 +237,7 @@ def main():
             file.write("File: \n")
             unique_files = dfFiltered['Filename'].unique()
             for f in unique_files:
-                file.write(f"{f}")
+                file.write(f"{f} \n")
 
 
         elif datatype == "dates":
@@ -289,127 +286,128 @@ def main():
                     else:
                         intrigs_hours = 0
 
-        file.write(f"Total Days: {len(dfFiltered['Date'].unique())} days \n")
-        file.write(f"Total Files: {len(dfFiltered['Filename'].unique())} files \n")
-        file.write(f"Total Hours Data: {(len(dfFiltered['Filename'].unique()) * 97) / 3600:.1f} hours \n")
+            file.write(f"Total Days: {len(dfFiltered['Date'].unique())} days \n")
+            file.write(f"Total Files: {len(dfFiltered['Filename'].unique())} files \n")
+            file.write(f"Total Hours Data: {(len(dfFiltered['Filename'].unique()) * 97) / 3600:.1f} hours \n")
     ## old:
         # file.write("Date, Night Files, Hours Data \n")
 
         
 
-        # write the data for each day
-        # get the unique values in the Date column
-        unique_dates = dfFiltered['Date'].unique()
-        total_days = len(unique_dates)
-        
-        
-        # get the unique values in the Filename column
-        unique_files = dfFiltered['Filename'].unique()
-        total_files = len(unique_files)
-        # print(total_files)
+            # write the data for each day
+            # get the unique values in the Date column
+            unique_dates = dfFiltered['Date'].unique()
+            total_days = len(unique_dates)
+            
+            
+            # get the unique values in the Filename column
+            unique_files = dfFiltered['Filename'].unique()
+            total_files = len(unique_files)
+            # print(total_files)
 
-        # calculate the hours data
-        hours_data = (total_files * 97) / 3600
-    ## PER NIGHT
-        for date in unique_dates:
-            # print(date)
-            ## df with all files for each night
-            day_data = dfFiltered[dfFiltered['Date'] == date]
-            # print(day_data)
-            ## number of files for each night
-            night_files = len(day_data)
-            # print(night_files)
-            ## number of hours for each night
-            night_hours_data = (night_files * 97) / 3600
-            # print(night_hours_data)
+            # calculate the hours data
+            hours_data = (total_files * 97) / 3600
+        ## PER NIGHT
+            for date in unique_dates:
+                # print(date)
+                ## df with all files for each night
+                day_data = dfFiltered[dfFiltered['Date'] == date]
+                # print(day_data)
+                ## number of files for each night
+                night_files = len(day_data)
+                # print(night_files)
+                ## number of hours for each night
+                night_hours_data = (night_files * 97) / 3600
+                # print(night_hours_data)
 
-        ## old
-            # file.write(f"{date}, {night_files}, {night_hours_data:.2f}\n")
+            ## old
+                # file.write(f"{date}, {night_files}, {night_hours_data:.2f}\n")
 
-        
-        ## door position identification:
-            ## find files with OpMode 1 - door open
-            door_open_data = day_data[day_data['OpMode'] == 1]
-            door_open_files = len(door_open_data)
+            
+            ## door position identification:
+                ## find files with OpMode 1 - door open
+                door_open_data = day_data[day_data['OpMode'] == 1]
+                door_open_files = len(door_open_data)
 
-            # print(date)
-            # print(door_open_data)
-            # print(door_open_files)
+                # print(date)
+                # print(door_open_data)
+                # print(door_open_files)
 
-            ## find files with OpMode 2 - door closed
-            door_closed_data = day_data[day_data['OpMode'] == 3]
-            door_closed_files = len(door_closed_data)
+                ## find files with OpMode 2 - door closed
+                door_closed_data = day_data[day_data['OpMode'] == 3]
+                door_closed_files = len(door_closed_data)
 
-            # print(date)
-            # print(door_closed_data)
-            # print(door_closed_files)
+                # print(date)
+                # print(door_closed_data)
+                # print(door_closed_files)
 
-            ## find files with OpMode 2 - ext moon
-            extmoon_data = day_data[day_data['OpMode'] == 2]
-            extmoon_files = len(extmoon_data)
+                ## find files with OpMode 2 - ext moon
+                extmoon_data = day_data[day_data['OpMode'] == 2]
+                extmoon_files = len(extmoon_data)
 
-            # print(date)
-            # print(extmoon_data)
-            # print(extmoon_files)
+                # print(date)
+                # print(extmoon_data)
+                # print(extmoon_files)
 
-        ## binary 
-            num = ["0", "0", "0"]
-        
-            if door_open_files != 0:
-                num[0] = "1"
-            if extmoon_files != 0:
-                num[1] = "1"
-            if door_closed_files != 0:
-                num[2] = "1"
-            binary_result = "".join(num)
-            # print(f"result: {date}, {binary_result}")
+            # ## binary 
+            #     num = ["0", "0", "0"]
+            
+            #     if door_open_files != 0:
+            #         num[0] = "1"
+            #     if extmoon_files != 0:
+            #         num[1] = "1"
+            #     if door_closed_files != 0:
+            #         num[2] = "1"
+            #     binary_result = "".join(num)
+            #     # print(f"result: {date}, {binary_result}")
 
-        ## based on if there are any files with a) ext moon data or b) door open data
-            ## if any extmoon files -> night = extmoon
-            if extmoon_files != 0:
-                door_position = "e"
-                return door_position
-            ## if no ext moon files but any door open files -> night = door open
-            elif door_open_files != 0:
-                door_position = "o"
-                return door_position
-            ## if no ext moon or door open files (only door closed files) -> night = door closed
-            else:
-                door_position = "c"
-                return door_position
+            ## based on if there are any files with a) ext moon data or b) door open data
+                ## if any extmoon files -> night = extmoon
+                if extmoon_files != 0:
+                    door_position = "e"
+                    return door_position
+                ## if no ext moon files but any door open files -> night = door open
+                elif door_open_files != 0:
+                    door_position = "o"
+                    return door_position
+                ## if no ext moon or door open files (only door closed files) -> night = door closed
+                else:
+                    door_position = "c"
+                    return door_position
 
-    # # include door position indicator per night
-    #     file.write(f"{date}, {night_files}, {night_hours_data:.2f}, {door_position} \n")
+        # # include door position indicator per night
+        #     file.write(f"{date}, {night_files}, {night_hours_data:.2f}, {door_position} \n")
 
-        door=doorIn()
-        if door == "o":
-            if door_position == "o":
+            door=doorIn()
+            if door == "o":
                 file.write("Door open data \n")
+                ## includes door open hours from ext moon dates too, migth not want that or to specify?
                 file.write(f"Door Open Hours: {open_hours:.1f} hours \n")
                 file.write("\n")
-                file.write("Date, Night Files, Hours \n")
-                file.write(f"{date}, {night_files}, {night_hours_data:.2f} \n")
-        elif door == "e":
-            if door_position == "e":
-                file.write("ext moon data \n")
-                file.write(f"Extended Moon Hours: {extmoon_hours:.1f} hours \n")
+                if door_position == "o":
+                    file.write("Date, Night Files, Hours \n")
+                    file.write(f"{date}, {night_files}, {night_hours_data:.2f} \n")
+            elif door == "e":
+                if door_position == "e":
+                    file.write("ext moon data \n")
+                    file.write(f"Extended Moon Hours: {extmoon_hours:.1f} hours \n")
+                    file.write("\n")
+                    file.write("Date, Night Files, Hours \n")
+                    file.write(f"{date}, {night_files}, {night_hours_data:.2f} \n")
+            elif door == "c":
+                if door_position == "c":
+                    file.write("Door closed data \n")
+                    file.write(f"Door Closed Hours: {closed_hours:.1f} hours \n")
+                    file.write("Date, Night Files, Hours \n")
+                    file.write(f"{date}, {night_files}, {night_hours_data:.2f} \n")
+            elif door == "":
+                file.write(f"Door Open Hours Data: {open_hours:.1f} hours \n")
+                file.write(f"Extended Moon Hours Data: {extmoon_hours:.1f} hours \n")
+                file.write(f"Door Closed Hours Data: {closed_hours:.1f} hours \n")
+                file.write("all rank 8 night data \n")
                 file.write("\n")
-                file.write("Date, Night Files, Hours \n")
-                file.write(f"{date}, {night_files}, {night_hours_data:.2f} \n")
-        elif door == "c":
-            if door_position == "c":
-                file.write("Door closed data \n")
-                file.write(f"Door Closed Hours: {closed_hours:.1f} hours \n")
-                file.write("Date, Night Files, Hours \n")
-                file.write(f"{date}, {night_files}, {night_hours_data:.2f} \n")
-        elif door == "":
-            file.write(f"Door Open Hours Data: {open_hours:.1f} hours \n")
-            file.write(f"Extended Moon Hours Data: {extmoon_hours:.1f} hours \n")
-            file.write(f"Door Closed Hours Data: {closed_hours:.1f} hours \n")
-            file.write("all rank 8 night data \n")
-            file.write("\n")
-            file.write("Date, Night Files, Hours Data, Door Position \n")
-            file.write(f"{date}, {night_files}, {night_hours_data:.2f}, {door_position} \n")
+                file.write("Date, Night Files, Hours Data, Door Position \n")
+                file.write(f"{date}, {night_files}, {night_hours_data:.2f}, {door_position} \n")
         
 
 
