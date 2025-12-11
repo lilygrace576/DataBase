@@ -95,7 +95,7 @@ def doorIn():
 ############################################################################
 ## get total open/closed/ext hours for entire output
 ## args are opmode and dfFiltered ?
-def getOpHOurs(o, df):
+def getOpHours(o, df):
     open_hours = 0
     extmoon_hours = 0
     closed_hours = 0
@@ -175,7 +175,7 @@ def nightDoorPos(dates, df):
         ## if no ext moon or door open files (only door closed files) -> night = door closed
         else:
             door_position = "c"
-    return door_position, night_hours_data, night_open_hours, night_closed_hours, night_extmoon_hours
+    return door_position, night_files, night_hours_data, night_open_hours, night_closed_hours, night_extmoon_hours
 ############################################################################
 
 
@@ -326,6 +326,25 @@ def main():
             unique_files = dfFiltered['Filename'].unique()
             for f in unique_files:
                 file.write(f"{f} \n")
+        # want data for each night
+        if datatype == "dates":
+            unique_dates = dfFiltered['Date'].unique()
+            getOpHours(opmode, dfFiltered)
+            # returns open_hours, closed_hours, extmoon_hours, intrigs_hours, and weird_hours
+            nightDoorPos(unique_dates, dfFiltered)
+            # returns door_position, night_files, night_hours_data, night_open_hours, night_closed_hours, and night_extmoon_hours
+            # check if want dates with specific door position
+            door=doorIn()
+            # if not list all dates and their data
+            if door == "":
+                file.write("Date, Night Files, Hours, Door_Position \n")
+                for date in unique_dates:
+                    file.write(f"{date}, {night_files}, {night_hours_data}, {door_position} \n")
+
+                
+
+
+
 
 
 if __name__ == "__main__":
