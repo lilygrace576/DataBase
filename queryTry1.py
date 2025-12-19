@@ -44,47 +44,47 @@ class color:
 ## user input defs
 ############################################################################
 def startDateIn():
-    startDate=input(color.RED + "start date:" + color.END)
+    startDate=input(color.RED + "start date: " + color.END)
     print(startDate)
     return startDate
 
 def endDateIn():
-    endDate=input(color.RED + "end date:" + color.END)
+    endDate=input(color.RED + "end date: " + color.END)
     print(endDate)
     return endDate
 
 def dORf():
-    want=input(color.RED + "dates or files:" + color.END)
+    want=input(color.RED + "dates or files: " + color.END)
     print(want)
     return(want)
 
 def hvValIn():
-    hvVal=input(color.RED + "hvValues1:" + color.END)
+    hvVal=input(color.RED + "hvValues1: " + color.END)
     print(hvVal)
     return hvVal
 
 def hvCurrIn():
-    hvCurr=input(color.RED + "hvCurrents1:" + color.END)
-    print(hvCurr)
-    return hvCurr
+    hvCurr1, hvCurr2=input(color.RED + "hvCurrents1 range: " + color.END).split()
+    print(f"{hvCurr1} - {hvCurr2}")
+    return hvCurr1, hvCurr2
 
 def sunAltIn():
-    sunAlt=input(color.RED + "sun altitude:" + color.END)
-    print(sunAlt)
-    return sunAlt
+    sunAlt1, sunAlt2=input(color.RED + "sun altitude range: " + color.END).split
+    print(f"{sunAlt1} - {sunAlt2}")
+    return sunAlt1, sunAlt2
 
 def moonAltIn():
-    moonAlt=input(color.RED + "moon altitude:" + color.END)
-    print(moonAlt)
-    return moonAlt
+    moonAlt1, moonAlt2=input(color.RED + "moon altitude range: " + color.END).split
+    print(f"{moonAlt1} - {moonAlt2}")
+    return moonAlt1, moonAlt2
 
 def opModeIn():
-    opMode=input(color.RED + "operation mode:" + color.END)
+    opMode=input(color.RED + "operation mode: " + color.END)
     print(opMode)
     return opMode
 
 def doorIn():
-    door=input(color.RED + "door position:" + color.END)
+    door=input(color.RED + "door position: " + color.END)
     print(door)
     return door
 ############################################################################
@@ -215,15 +215,26 @@ def main():
                 ## only include files with that hvvalue
                 dfFiltered = dfFiltered[hvValR == float(hvVal)]
             ## check user input for specific hvcurrent
-            hvCurr=hvCurrIn()
-            if hvCurr != "":
-                file.write(f"hvCurrents = {hvCurr} \n")
-                ## set hvCurrR = all hvcurrents of files in dfFiltered
-                hvCurrR = dfFiltered['hvCurrents1']
-                ## round those values to 1 decimal
-                hvCurrR = round(hvCurrR, 1)
-                ## only include files with that hvcurrent
-                dfFiltered = dfFiltered[hvCurrR == float(hvCurr)]
+            hvCurr1, hvCurr2 =hvCurrIn()
+            if hvCurr1 != "" and hvCurr2 != "":
+                file.write(f"hvCurrent range = {hvCurr1} - {hvCurr2} \n")
+                dfFiltered = dfFiltered[dfFiltered['hvcurrents1'] >= float(hvCurr1)]
+                dfFiltered = dfFiltered[dfFiltered['hvcurrents1'] <= float(hvCurr2)]
+            elif hvCurr1 != "":
+                file.write(f"hvCurrent: > {hvCurr1} \n")
+                dfFiltered = dfFiltered[dfFiltered['hvcurrents1'] >= float(hvCurr1)]
+            elif hvCurr2 != "":
+                file.write(f"hvCurrent: < {hvCurr2} \n")
+                dfFiltered = dfFiltered[dfFiltered['hvcurrents1'] <= float(hvCurr2)]
+            
+                
+                # ## round
+                # ## set hvCurrR = all hvcurrents of files in dfFiltered
+                # hvCurrR = dfFiltered['hvCurrents1']
+                # ## round those values to 1 decimal
+                # hvCurrR = round(hvCurrR, 1)
+                # ## only include files with that hvcurrent
+                # dfFiltered = dfFiltered[hvCurrR == float(hvCurr)]
             ## check user input for specific sunAltitude
             sunAlt=sunAltIn()
             if sunAlt != "":
