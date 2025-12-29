@@ -67,7 +67,7 @@ def hvValIn():
     hvVal=input(color.RED + "hvValues1: " + color.END)
     print(hvVal)
     return hvVal
-
+## input = range
 def hvCurrIn():
     hvCurr1, hvCurr2=input(color.RED + "hvCurrents1 range: " + color.END).split()
     print(f"{hvCurr1} - {hvCurr2}")
@@ -82,6 +82,7 @@ def moonAltIn():
     moonAlt1, moonAlt2=input(color.RED + "moon altitude range: " + color.END).split
     print(f"{moonAlt1} - {moonAlt2}")
     return moonAlt1, moonAlt2
+##
 
 def opModeIn():
     opMode=input(color.RED + "operation mode: " + color.END)
