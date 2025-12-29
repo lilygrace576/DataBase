@@ -402,7 +402,7 @@ def main():
                 elif door == "":
                     file.write(f"{date}, {day_files}, {day_hours_data:.2f}, {door_position} \n")
         
-print("Rank 8 Query Files Data written to rank8Query.txt")
+print("Rank 8 Query Files Data written to dbQuery.txt")
     
 
 if __name__ == "__main__":
