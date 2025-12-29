@@ -177,7 +177,19 @@ def main():
 
     
     ## only include Rank 8 data
-    dfFiltered = dfMerged[(dfMerged['Ranking'] == 8)]
+    # dfFiltered = dfMerged[(dfMerged['Ranking'] == 8)]
+
+    dfFiltered = dfMerged
+    ## check for user input
+    rank1, rank2=rankIn()
+    if rank1 != "" and rank2 != "":
+        dfFiltered = dfFiltered[(dfFiltered['Ranking'] == rank1) | (dfFiltered['Ranking'] == rank2)]
+    elif rank1 == "":
+        dfFiltered = dfFiltered[dfFiltered['Ranking'] == rank2]
+    elif rank2 == "":
+        dfFiltered = dfFiltered[dfFiltered['Ranking'] == rank1]
+    else: 
+        dfFiltered = dfFiltered
 
     ## create a new column with the data from the filename column so that it is yyyy-mm-dd
     dfFiltered['Date'] = (pd.to_datetime(dfFiltered['Filename'].str[12:22])).astype(str)
