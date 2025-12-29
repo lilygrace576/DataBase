@@ -74,12 +74,12 @@ def hvCurrIn():
     return hvCurr1, hvCurr2
 
 def sunAltIn():
-    sunAlt1, sunAlt2=input(color.RED + "sun altitude range: " + color.END).split
+    sunAlt1, sunAlt2=input(color.RED + "sun altitude range: " + color.END).split()
     print(f"{sunAlt1} - {sunAlt2}")
     return sunAlt1, sunAlt2
 
 def moonAltIn():
-    moonAlt1, moonAlt2=input(color.RED + "moon altitude range: " + color.END).split
+    moonAlt1, moonAlt2=input(color.RED + "moon altitude range: " + color.END).split()
     print(f"{moonAlt1} - {moonAlt2}")
     return moonAlt1, moonAlt2
 ##
