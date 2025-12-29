@@ -58,6 +58,11 @@ def dORf():
     print(want)
     return(want)
 
+def rankIn():
+    rank1, rank2=input(color.RED + "rank(s): " + color.END).split()
+    print(f"{rank1}, {rank2}")
+    return rank1, rank2
+
 def hvValIn():
     hvVal=input(color.RED + "hvValues1: " + color.END)
     print(hvVal)
