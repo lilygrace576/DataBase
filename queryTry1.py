@@ -212,7 +212,7 @@ def main():
     opmodes = dfFiltered['OpMode']
 
     ## write output txt file
-    with open('rank8Query.txt', mode='w', newline='') as file:
+    with open('dbQuery.txt', mode='w', newline='') as file:
         ## write header
         file.write("Trinity Demonstrator Database Output - Rank 8 Queries \n")
         file.write("")
