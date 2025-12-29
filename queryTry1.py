@@ -244,7 +244,6 @@ def main():
             elif hvCurr2 != "":
                 file.write(f"hvCurrent: < {hvCurr2} \n")
                 dfFiltered = dfFiltered[dfFiltered['hvcurrents1'] <= float(hvCurr2)]
-            
                 
                 # ## round
                 # ## set hvCurrR = all hvcurrents of files in dfFiltered
@@ -253,26 +252,33 @@ def main():
                 # hvCurrR = round(hvCurrR, 1)
                 # ## only include files with that hvcurrent
                 # dfFiltered = dfFiltered[hvCurrR == float(hvCurr)]
-            ## check user input for specific sunAltitude
-            sunAlt=sunAltIn()
-            if sunAlt != "":
-                file.write(f"sun altitude = {sunAlt} \n")
-                ## set sunAltR = all sunAltitudes of files in dfFiltered
-                sunAltR = dfFiltered['sunAltitude']
-                ## round those values to integer
-                sunAltR = round(sunAltR)
-                ## only include files with that sunAltitude
-                dfFiltered = dfFiltered[sunAltR == float(sunAlt)]
-            ## check user input for specific moonAltitude
-            moonAlt=moonAltIn()
-            if moonAlt != "":
-                file.write(f"moon altitude = {moonAlt} \n")
-                ## set moonAltR = all moonAltitudes of files in dfFiltered
-                moonAltR = dfFiltered['moonAltitude']
-                ## round those values to integer
-                moonAltR = round(moonAltR)
-                ## only include files with that moonAltitude
-                dfFiltered = dfFiltered[moonAltR == float(moonAlt)]
+
+            ## check user input for specific sunAltitude (range)
+            sunAlt1, sunAlt2=sunAltIn()
+            if sunAlt1 != "" and sunAlt2 != "":
+                file.write(f"sun altitude range = {sunAlt1} - {sunAlt2} \n")
+                dfFiltered = dfFiltered[dfFiltered['sunAltitude'] >= int(sunAlt1)]
+                dfFiltered = dfFiltered[dfFiltered['sunAltitude'] <= int(sunAlt2)]
+            elif sunAlt1 != "" and sunAlt2 == "":
+                file.write(f"sun altitude: > {sunAlt1} \n")
+                dfFiltered = dfFiltered[dfFiltered['sunAltitude'] >= int(sunAlt1)]
+            elif sunAlt2 != "" and sunAlt1 == "":
+                file.write(f"sun altitude: < {sunAlt2} \n")
+                dfFiltered = dfFiltered[dfFiltered['sunAltitude'] <= int(sunAlt2)]
+
+            ## check user input for specific moonAltitude (range)
+            moonAlt1, moonAlt2=moonAltIn()
+            if moonAlt1 != "" and moonAlt2 != "":
+                file.write(f"moon altitude range = {moonAlt1} - {moonAlt2} \n")
+                dfFiltered = dfFiltered[dfFiltered['moonAltitude'] >= int(moonAlt1)]
+                dfFiltered = dfFiltered[dfFiltered['moonAltitude'] <= int(moonAlt2)]
+            elif moonAlt1 != "" and moonAlt2 == "":
+                file.write(f"moon altitude: > {moonAlt1} \n")
+                dfFiltered = dfFiltered[dfFiltered['moonAltitude'] >= int(moonAlt1)]
+            elif moonAlt2 != "" and moonAlt1 == "":
+                file.write(f"moon altitude: < {moonAlt2} \n")
+                dfFiltered = dfFiltered[dfFiltered['moonAltitude'] <= int(moonAlt2)]
+
             ## check user input for specific opmode
             op=opModeIn()
             if op != "":
