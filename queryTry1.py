@@ -53,36 +53,38 @@ def endDateIn():
     print(endDate)
     return endDate
 
-def dORf():
-    want=input(color.RED + "dates or files: " + color.END)
-    print(want)
-    return(want)
-
 def rankIn():
     rank1, rank2=input(color.RED + "rank(s): " + color.END).split()
     print(f"{rank1}, {rank2}")
     return rank1, rank2
 
+def dORf():
+    want=input(color.RED + "dates or files: " + color.END)
+    print(want)
+    return want
+
 def hvValIn():
     hvVal=input(color.RED + "hvValues1: " + color.END)
     print(hvVal)
     return hvVal
-## input = range
+
+## 2 inputs for range
 def hvCurrIn():
     hvCurr1, hvCurr2=input(color.RED + "hvCurrents1 range: " + color.END).split()
-    print(f"{hvCurr1} - {hvCurr2}")
+    print(f"{hvCurr1}, {hvCurr2}")
     return hvCurr1, hvCurr2
 
+## 2 inputs for range
 def sunAltIn():
     sunAlt1, sunAlt2=input(color.RED + "sun altitude range: " + color.END).split()
-    print(f"{sunAlt1} - {sunAlt2}")
+    print(f"{sunAlt1}, {sunAlt2}")
     return sunAlt1, sunAlt2
 
+## 2 inputs for range
 def moonAltIn():
-    moonAlt1, moonAlt2=input(color.RED + "moon altitude range: " + color.END).split()
-    print(f"{moonAlt1} - {moonAlt2}")
+    moonAlt1, moonAlt2=input(color.RED + "moon altitude: " + color.END).split()
+    print(f"{moonAlt1}, {moonAlt2}")
     return moonAlt1, moonAlt2
-##
 
 def opModeIn():
     opMode=input(color.RED + "operation mode: " + color.END)
@@ -175,48 +177,66 @@ def main():
     dfMerged['sunAltitude'] = dfMerged['sunAltitude'].astype(float)
     dfMerged['moonAltitude'] = dfMerged['moonAltitude'].astype(float)
 
-    
     ## only include Rank 8 data
     # dfFiltered = dfMerged[(dfMerged['Ranking'] == 8)]
 
     dfFiltered = dfMerged
-    ## check for user input
-    rank1, rank2=rankIn()
-    if rank1 != "" and rank2 != "":
-        dfFiltered = dfFiltered[(dfFiltered['Ranking'] == rank1) | (dfFiltered['Ranking'] == rank2)]
-    elif rank1 == "":
-        dfFiltered = dfFiltered[dfFiltered['Ranking'] == rank2]
-    elif rank2 == "":
-        dfFiltered = dfFiltered[dfFiltered['Ranking'] == rank1]
-    else: 
-        dfFiltered = dfFiltered
+    # print(dfFiltered)
+
+    ## extract dates from filenames
+    date = dfFiltered['Filename'].str.extract(
+        r'(\d{4}-\d{2}-\d{2}|\d{8})'
+    )[0]
+    ## create new column in df for dates
+    dfFiltered['Date'] = (
+        date
+        .str.replace('-', '', regex=True)
+        .astype(int)
+    )
+    # print(dfFiltered['Date'])
+    ## some files output as "20241213T00:00:00.00_FolderEmpty" so this extracts dates in either format yyyy-mm-dd or yyyymmdd
 
     ## create a new column with the data from the filename column so that it is yyyy-mm-dd
-    dfFiltered['Date'] = (pd.to_datetime(dfFiltered['Filename'].str[12:22])).astype(str)
-    dfFiltered['Date'] = (dfFiltered['Date'].str.replace('-','')).astype(int)
+    # dfFiltered['Date'] = (pd.to_datetime(dfFiltered['Filename'].str[12:22])).astype(str)
+    # dfFiltered['Date'] = (dfFiltered['Date'].str.replace('-','')).astype(int)
 
     ## get user input start/end dates
     startDate=startDateIn()
     endDate=endDateIn()
     ## check for user input
-    if startDate != "":
-        dfFiltered = dfFiltered[dfFiltered['Date'] >= startDate]
+    if startDate != "n":
+        dfFiltered = dfFiltered[dfFiltered['Date'] >= int(startDate)]
     else:
         dfFiltered = dfFiltered[dfFiltered['Date'] >= 20250101]
-    if endDate != "":
-        dfFiltered = dfFiltered[dfFiltered['Date'] <= endDate]
+    if endDate != "n":
+        dfFiltered = dfFiltered[dfFiltered['Date'] <= int(endDate)]
     else:
         dfFiltered = dfFiltered[dfFiltered['Date'] <= 20251231]
 
     ## set opmodes = all opmodes of files in dfFiltered
     opmodes = dfFiltered['OpMode']
+    ## set vars = sun and moon alts
+    absSunAlt = abs(dfFiltered['sunAltitude'])
+    absMoonAlt = abs(dfFiltered['moonAltitude'])
 
     ## write output txt file
     with open('dbQuery.txt', mode='w', newline='') as file:
         ## write header
-        file.write("Trinity Demonstrator Database Output - Rank 8 Queries \n")
+        file.write("Trinity Demonstrator Database Output - Queries \n")
         file.write("")
         file.write(f"Period of time : {dfFiltered['Date'].min()} to {dfFiltered['Date'].max()} \n")
+
+            ## check for user input
+        rank1, rank2=rankIn()
+        if rank1 != "n" and rank2 != "n":
+            file.write(f"Ranks: {rank1}, {rank2} \n")
+            dfFiltered = dfFiltered[dfFiltered['Ranking'].isin([int(rank1), int(rank2)])]
+        elif rank1 != "n" and rank2 == "n":
+            file.write(f"Rank: {rank1} \n")
+            dfFiltered = dfFiltered[dfFiltered['Ranking'] == int(rank1)]
+        else: 
+            dfFiltered = dfFiltered
+            # print(dfFiltered)
 
         ## check user input for if we want indiv files or dates
         datatype=dORf()
@@ -224,7 +244,7 @@ def main():
         if datatype == "files":
             ## check user input for specific hvvalue
             hvVal=hvValIn()
-            if hvVal != "":
+            if hvVal != "n":
                 file.write(f"hvValues = {hvVal} \n")
                 ## set hvValR = all hvvalues of files in dfFiltered
                 hvValR = dfFiltered['hvValues1']
@@ -232,59 +252,52 @@ def main():
                 hvValR = round(hvValR)
                 ## only include files with that hvvalue
                 dfFiltered = dfFiltered[hvValR == float(hvVal)]
-            ## check user input for specific hvcurrent
-            hvCurr1, hvCurr2 =hvCurrIn()
-            if hvCurr1 != "" and hvCurr2 != "":
+
+            ## check user input for specific hvcurrent (range)
+            hvCurr1, hvCurr2=hvCurrIn()
+            if hvCurr1 != "n" and hvCurr2 != "n":
                 file.write(f"hvCurrent range = {hvCurr1} - {hvCurr2} \n")
                 dfFiltered = dfFiltered[dfFiltered['hvcurrents1'] >= float(hvCurr1)]
                 dfFiltered = dfFiltered[dfFiltered['hvcurrents1'] <= float(hvCurr2)]
-            elif hvCurr1 != "":
+            elif hvCurr1 != "n" and hvCurr2 == "n":
                 file.write(f"hvCurrent: > {hvCurr1} \n")
                 dfFiltered = dfFiltered[dfFiltered['hvcurrents1'] >= float(hvCurr1)]
-            elif hvCurr2 != "":
+            elif hvCurr2 != "n" and hvCurr1 == "n":
                 file.write(f"hvCurrent: < {hvCurr2} \n")
                 dfFiltered = dfFiltered[dfFiltered['hvcurrents1'] <= float(hvCurr2)]
-                
-                # ## round
-                # ## set hvCurrR = all hvcurrents of files in dfFiltered
-                # hvCurrR = dfFiltered['hvCurrents1']
-                # ## round those values to 1 decimal
-                # hvCurrR = round(hvCurrR, 1)
-                # ## only include files with that hvcurrent
-                # dfFiltered = dfFiltered[hvCurrR == float(hvCurr)]
 
             ## check user input for specific sunAltitude (range)
             sunAlt1, sunAlt2=sunAltIn()
-            if sunAlt1 != "" and sunAlt2 != "":
+            if sunAlt1 != "n" and sunAlt2 != "n":
                 file.write(f"sun altitude range = {sunAlt1} - {sunAlt2} \n")
-                dfFiltered = dfFiltered[dfFiltered['sunAltitude'] >= int(sunAlt1)]
-                dfFiltered = dfFiltered[dfFiltered['sunAltitude'] <= int(sunAlt2)]
-            elif sunAlt1 != "" and sunAlt2 == "":
+                dfFiltered = dfFiltered.loc[absSunAlt >= abs(int(sunAlt1))]
+                dfFiltered = dfFiltered.loc[absSunAlt <= abs(int(sunAlt2))]
+            elif sunAlt1 != "n" and sunAlt2 == "n":
                 file.write(f"sun altitude: > {sunAlt1} \n")
-                dfFiltered = dfFiltered[dfFiltered['sunAltitude'] >= int(sunAlt1)]
-            elif sunAlt2 != "" and sunAlt1 == "":
+                dfFiltered = dfFiltered.loc[absSunAlt >= abs(int(sunAlt1))]
+            elif sunAlt2 != "n" and sunAlt1 == "n":
                 file.write(f"sun altitude: < {sunAlt2} \n")
-                dfFiltered = dfFiltered[dfFiltered['sunAltitude'] <= int(sunAlt2)]
-
-            ## check user input for specific moonAltitude (range)
+                dfFiltered = dfFiltered.loc[absSunAlt <= abs(int(sunAlt2))]
+               
+            ## check user input for specific moonAltitude
             moonAlt1, moonAlt2=moonAltIn()
-            if moonAlt1 != "" and moonAlt2 != "":
+            if moonAlt1 != "n" and moonAlt2 != "n":
                 file.write(f"moon altitude range = {moonAlt1} - {moonAlt2} \n")
-                dfFiltered = dfFiltered[dfFiltered['moonAltitude'] >= int(moonAlt1)]
-                dfFiltered = dfFiltered[dfFiltered['moonAltitude'] <= int(moonAlt2)]
-            elif moonAlt1 != "" and moonAlt2 == "":
+                dfFiltered = dfFiltered.loc[absMoonAlt >= abs(int(moonAlt1))]
+                dfFiltered = dfFiltered.loc[absMoonAlt <= abs(int(moonAlt2))]
+            elif moonAlt1 != "n" and moonAlt2 == "n":
                 file.write(f"moon altitude: > {moonAlt1} \n")
-                dfFiltered = dfFiltered[dfFiltered['moonAltitude'] >= int(moonAlt1)]
-            elif moonAlt2 != "" and moonAlt1 == "":
+                dfFiltered = dfFiltered.loc[absMoonAlt >= abs(int(moonAlt1))]
+            elif moonAlt2 != "n" and moonAlt1 == "n":
                 file.write(f"moon altitude: < {moonAlt2} \n")
-                dfFiltered = dfFiltered[dfFiltered['moonAltitude'] <= int(moonAlt2)]
+                dfFiltered = dfFiltered.loc[absMoonAlt <= abs(int(moonAlt2))]
 
             ## check user input for specific opmode
             op=opModeIn()
-            if op != "":
+            if op != "n":
                 file.write(f"operation mode = {op} \n")
                 ## only include files with that opmode
-                dfFiltered = dfFiltered[opmodes == op]
+                dfFiltered = dfFiltered[opmodes == int(op)]
             ## write total days, files, and hours data to txt
             file.write(f"Total Days: {len(dfFiltered['Date'].unique())} days \n")
             file.write(f"Total Files: {len(dfFiltered['Filename'].unique())} files \n")
@@ -308,7 +321,7 @@ def main():
             open_hours = 0
             extmoon_hours = 0
             closed_hours = 0
-            for i in opmode:
+            for i in opmodes:
                 ## open data
                 if i == 1:
                     total_open_data = dfFiltered[dfFiltered['OpMode'] == i]
@@ -347,14 +360,9 @@ def main():
             ## get the unique values in the Date column
             unique_dates = dfFiltered['Date'].unique()
 
-            # total_days = len(unique_dates)
-            # unique_files = dfFiltered['Filename'].unique()
-            # total_files = len(unique_files)
-            # hours_data = (total_files * 97) / 3600
-
             ## check user input for specific opmode
             door=doorIn()
-            if door == "":
+            if door == "n":
                 file.write("\n")
                 file.write("Date, Files, Hours, Door Position \n")
             else: 
@@ -405,10 +413,10 @@ def main():
                     if door_position == "c":
                         file.write(f"{date}, {day_files}, {day_hours_data:.2f} \n")
                 ## if no door position specified, include door position for each date in txt
-                elif door == "":
+                elif door == "n":
                     file.write(f"{date}, {day_files}, {day_hours_data:.2f}, {door_position} \n")
         
-print("Rank 8 Query Files Data written to dbQuery.txt")
+    print("Query Files Data written to dbQuery.txt")
     
 
 if __name__ == "__main__":
