@@ -53,11 +53,18 @@ def endDateIn():
     print(endDate)
     return endDate
 
+#### trying to account for any number of variables input
 def rankIn():
-    rank1, rank2=input(color.RED + "rank(s): " + color.END).split()
-    print(f"{rank1}, {rank2}")
-    return rank1, rank2
+    rankVecIn=input(color.RED + "rank(s): " + color.END).split()
+    ranksIn=[int(item) for item in rankVecIn]
+    ranks=np.array(ranksIn)
+    print(ranks)
+    return ranks
 
+    # rank1, rank2=input(color.RED + "rank(s): " + color.END).split()
+    # print(f"{rank1}, {rank2}")
+    # return rank1, rank2
+####
 def dORf():
     want=input(color.RED + "dates or files: " + color.END)
     print(want)
@@ -226,17 +233,26 @@ def main():
         file.write("")
         file.write(f"Period of time : {dfFiltered['Date'].min()} to {dfFiltered['Date'].max()} \n")
 
-            ## check for user input
-        rank1, rank2=rankIn()
-        if rank1 != "n" and rank2 != "n":
-            file.write(f"Ranks: {rank1}, {rank2} \n")
-            dfFiltered = dfFiltered[dfFiltered['Ranking'].isin([int(rank1), int(rank2)])]
-        elif rank1 != "n" and rank2 == "n":
-            file.write(f"Rank: {rank1} \n")
-            dfFiltered = dfFiltered[dfFiltered['Ranking'] == int(rank1)]
-        else: 
-            dfFiltered = dfFiltered
-            # print(dfFiltered)
+        ## check for rank user input
+        rank=rankIn()
+        file.write("Ranks: ")
+        for r in rank:
+            file.write(f"{r}, ")
+        file.write(" \n")
+        if len(rank) != 0:
+            dfFiltered = dfFiltered[dfFiltered['Ranking'].isin(rank.astype(int))]
+        
+        
+        # rank1, rank2=rankIn()
+        # if rank1 != "n" and rank2 != "n":
+        #     file.write(f"Ranks: {rank1}, {rank2} \n")
+        #     dfFiltered = dfFiltered[dfFiltered['Ranking'].isin([int(rank1), int(rank2)])]
+        # elif rank1 != "n" and rank2 == "n":
+        #     file.write(f"Rank: {rank1} \n")
+        #     dfFiltered = dfFiltered[dfFiltered['Ranking'] == int(rank1)]
+        # else: 
+        #     dfFiltered = dfFiltered
+        #     # print(dfFiltered)
 
         ## check user input for if we want indiv files or dates
         datatype=dORf()
