@@ -430,10 +430,10 @@ def main():
 
                 ## door position for each date
                 ## any extmoon files = e
-                if day_extmoon_files != 0:
+                if day_extmoon_files >= 5:
                     door_position = "e"
                 ## no extmoon files but any open files = o
-                elif day_open_files != 0:
+                elif day_open_files >= 5:
                     door_position = "o"
                 ## no extmoon or open files, only closed files = c
                 elif day_closed_files != 0:
