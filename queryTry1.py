@@ -10,6 +10,7 @@ import matplotlib.colorbar as colorbar
 from matplotlib import colormaps
 import matplotlib.cm as cm
 import pandas as pd
+pd.set_option("display.max_rows", 101)
 import json
 import numpy as np
 import datetime as datetime
@@ -27,6 +28,8 @@ from datetime import datetime, timedelta
 import pandas as pd
 import time
 import pytz
+
+
 
 class color:
    PURPLE = '\033[95m'
@@ -53,18 +56,16 @@ def endDateIn():
     print(endDate)
     return endDate
 
-#### trying to account for any number of variables input
 def rankIn():
     rankVecIn=input(color.RED + "rank(s): " + color.END).split()
     ranksIn=[int(item) for item in rankVecIn]
     ranks=np.array(ranksIn)
     print(ranks)
     return ranks
-
     # rank1, rank2=input(color.RED + "rank(s): " + color.END).split()
     # print(f"{rank1}, {rank2}")
     # return rank1, rank2
-####
+
 def dORf():
     want=input(color.RED + "dates or files: " + color.END)
     print(want)
@@ -188,6 +189,7 @@ def main():
     # dfFiltered = dfMerged[(dfMerged['Ranking'] == 8)]
 
     dfFiltered = dfMerged
+    
     # print(dfFiltered)
 
     ## extract dates from filenames
@@ -211,11 +213,11 @@ def main():
     startDate=startDateIn()
     endDate=endDateIn()
     ## check for user input
-    if startDate != "n":
+    if startDate != "":
         dfFiltered = dfFiltered[dfFiltered['Date'] >= int(startDate)]
     else:
-        dfFiltered = dfFiltered[dfFiltered['Date'] >= 20250101]
-    if endDate != "n":
+        dfFiltered = dfFiltered[dfFiltered['Date'] >= 20241001]
+    if endDate != "":
         dfFiltered = dfFiltered[dfFiltered['Date'] <= int(endDate)]
     else:
         dfFiltered = dfFiltered[dfFiltered['Date'] <= 20251231]
@@ -241,34 +243,31 @@ def main():
         file.write(" \n")
         if len(rank) != 0:
             dfFiltered = dfFiltered[dfFiltered['Ranking'].isin(rank.astype(int))]
+            # print(dfFiltered.to_string())
         
-        
-        # rank1, rank2=rankIn()
-        # if rank1 != "n" and rank2 != "n":
-        #     file.write(f"Ranks: {rank1}, {rank2} \n")
-        #     dfFiltered = dfFiltered[dfFiltered['Ranking'].isin([int(rank1), int(rank2)])]
-        # elif rank1 != "n" and rank2 == "n":
-        #     file.write(f"Rank: {rank1} \n")
-        #     dfFiltered = dfFiltered[dfFiltered['Ranking'] == int(rank1)]
-        # else: 
-        #     dfFiltered = dfFiltered
-        #     # print(dfFiltered)
 
         ## check user input for if we want indiv files or dates
         datatype=dORf()
         ## want indiv file data
         if datatype == "files":
+            ## check user input for specific opmode
+            op=opModeIn()
+            if op != "":
+                file.write(f"operation mode = {op} \n")
+                ## only include files with that opmode
+                dfFiltered = dfFiltered[opmodes == int(op)]
+            print(len(dfFiltered))
             ## check user input for specific hvvalue
             hvVal=hvValIn()
-            if hvVal != "n":
+            if hvVal != "":
                 file.write(f"hvValues = {hvVal} \n")
                 ## set hvValR = all hvvalues of files in dfFiltered
-                hvValR = dfFiltered['hvValues1']
+                hvValR = dfFiltered['hvValues1'].round()
                 ## round those values to integer
-                hvValR = round(hvValR)
+                # hvValR = round(hvValR)
                 ## only include files with that hvvalue
                 dfFiltered = dfFiltered[hvValR == float(hvVal)]
-
+            print(len(dfFiltered))
             ## check user input for specific hvcurrent (range)
             hvCurr1, hvCurr2=hvCurrIn()
             if hvCurr1 != "n" and hvCurr2 != "n":
@@ -281,20 +280,20 @@ def main():
             elif hvCurr2 != "n" and hvCurr1 == "n":
                 file.write(f"hvCurrent: < {hvCurr2} \n")
                 dfFiltered = dfFiltered[dfFiltered['hvcurrents1'] <= float(hvCurr2)]
-
+            print(len(dfFiltered))
             ## check user input for specific sunAltitude (range)
             sunAlt1, sunAlt2=sunAltIn()
             if sunAlt1 != "n" and sunAlt2 != "n":
                 file.write(f"sun altitude range = {sunAlt1} - {sunAlt2} \n")
-                dfFiltered = dfFiltered.loc[absSunAlt >= abs(int(sunAlt1))]
-                dfFiltered = dfFiltered.loc[absSunAlt <= abs(int(sunAlt2))]
+                dfFiltered = dfFiltered.loc[absSunAlt <= abs(int(sunAlt1))]
+                dfFiltered = dfFiltered.loc[absSunAlt >= abs(int(sunAlt2))]
             elif sunAlt1 != "n" and sunAlt2 == "n":
                 file.write(f"sun altitude: > {sunAlt1} \n")
-                dfFiltered = dfFiltered.loc[absSunAlt >= abs(int(sunAlt1))]
+                dfFiltered = dfFiltered.loc[absSunAlt <= abs(int(sunAlt1))]
             elif sunAlt2 != "n" and sunAlt1 == "n":
                 file.write(f"sun altitude: < {sunAlt2} \n")
-                dfFiltered = dfFiltered.loc[absSunAlt <= abs(int(sunAlt2))]
-               
+                dfFiltered = dfFiltered.loc[absSunAlt >= abs(int(sunAlt2))]
+            print(len(dfFiltered))
             ## check user input for specific moonAltitude
             moonAlt1, moonAlt2=moonAltIn()
             if moonAlt1 != "n" and moonAlt2 != "n":
@@ -307,13 +306,11 @@ def main():
             elif moonAlt2 != "n" and moonAlt1 == "n":
                 file.write(f"moon altitude: < {moonAlt2} \n")
                 dfFiltered = dfFiltered.loc[absMoonAlt <= abs(int(moonAlt2))]
+            
+            print(dfFiltered)
+            print(len(dfFiltered))
 
-            ## check user input for specific opmode
-            op=opModeIn()
-            if op != "n":
-                file.write(f"operation mode = {op} \n")
-                ## only include files with that opmode
-                dfFiltered = dfFiltered[opmodes == int(op)]
+
             ## write total days, files, and hours data to txt
             file.write(f"Total Days: {len(dfFiltered['Date'].unique())} days \n")
             file.write(f"Total Files: {len(dfFiltered['Filename'].unique())} files \n")
@@ -334,6 +331,15 @@ def main():
         ## want dates data
         elif datatype == "dates":
             ## find open, closed, and extmoon data
+            hvVal=hvValIn()
+            if hvVal != "":
+                file.write(f"hvValues = {hvVal} \n")
+                ## set hvValR = all hvvalues of files in dfFiltered
+                hvValR = dfFiltered['hvValues1']
+                ## round those values to integer
+                hvValR = round(hvValR)
+                ## only include files with that hvvalue
+                dfFiltered = dfFiltered[hvValR == float(hvVal)]
             open_hours = 0
             extmoon_hours = 0
             closed_hours = 0
@@ -363,29 +369,45 @@ def main():
                     else:
                         closed_hours = 0
 
-            ## write total days, files, and hours data to txt
-            file.write(f"Total Days: {len(dfFiltered['Date'].unique())} days \n")
-            file.write(f"Total Files: {len(dfFiltered['Filename'].unique())} files \n")
-            file.write(f"Total Hours Data: {(len(dfFiltered['Filename'].unique()) * 97) / 3600:.1f} hours \n")
-            ## write total open, closed, ext moon hours data to txt
-            file.write(f"Door Open Hours Data: {open_hours:.1f} hours \n")
-            file.write(f"Extended Moon Hours Data: {extmoon_hours:.1f} hours \n")
-            file.write(f"Door Closed Hours Data: {closed_hours:.1f} hours \n")
-            file.write("listing dates \n")
+            # ## write total days, files, and hours data to txt
+            # file.write(f"Total Days: {len(dfFiltered['Date'].unique())} days \n")
+            # file.write(f"Total Files: {len(dfFiltered['Filename'].unique())} files \n")
+            # file.write(f"Total Hours Data: {(len(dfFiltered['Filename'].unique()) * 97) / 3600:.1f} hours \n")
+            # ## write total open, closed, ext moon hours data to txt
+            # file.write(f"Door Open Hours Data: {open_hours:.1f} hours \n")
+            # file.write(f"Extended Moon Hours Data: {extmoon_hours:.1f} hours \n")
+            # file.write(f"Door Closed Hours Data: {closed_hours:.1f} hours \n")
+            # file.write("listing dates \n")
             
             ## get the unique values in the Date column
             unique_dates = dfFiltered['Date'].unique()
 
             ## check user input for specific opmode
             door=doorIn()
-            if door == "n":
+            if door == "":
+                ## write total days, files, and hours data to txt
+                file.write(f"Total Days: {len(dfFiltered['Date'].unique())} days \n")
+                file.write(f"Total Files: {len(dfFiltered['Filename'].unique())} files \n")
+                file.write(f"Total Hours Data: {(len(dfFiltered['Filename'].unique()) * 97) / 3600:.1f} hours \n")
+                ## write total open, closed, ext moon hours data to txt
+                file.write(f"Door Open Hours Data: {open_hours:.1f} hours \n")
+                file.write(f"Extended Moon Hours Data: {extmoon_hours:.1f} hours \n")
+                file.write(f"Door Closed Hours Data: {closed_hours:.1f} hours \n")
+                file.write("listing dates \n")
                 file.write("\n")
                 file.write("Date, Files, Hours, Door Position \n")
-            else: 
-                file.write(f"door position = {door} \n")
-                file.write("\n")
-                file.write("Date, Files, Hours \n")
+            # else: 
+            #     file.write(f"door position = {door} \n")
+            #     file.write("\n")
+            #     file.write("Date, Files, Hours \n")
 
+            total_days_qd = 0
+            total_files_qd = 0
+            total_hours_qd = 0
+            total_open_hours_qd = 0
+            total_closed_hours_qd = 0
+            total_extmoon_hours_qd = 0
+            dates_qd = []
 
             ## indiv date data
             for date in unique_dates:
@@ -414,24 +436,78 @@ def main():
                 elif day_open_files != 0:
                     door_position = "o"
                 ## no extmoon or open files, only closed files = c
-                else:
+                elif day_closed_files != 0:
                     door_position = "c"
+            
 
+                if door == "":
+                    file.write(f"{date}, {day_files}, {day_hours_data:.2f}, {door_position} \n")
+                    continue
+                
                 ## check which door position wanted
                 ## write that door position's dates data to txt
-                if door == "o":
-                    if door_position == "o":
-                        file.write(f"{date}, {day_files}, {day_hours_data:.2f} \n")
-                elif door == "e":
-                    if door_position == "e":
-                        file.write(f"{date}, {day_files}, {day_hours_data:.2f} \n")
-                elif door == "c":
-                    if door_position == "c":
-                        file.write(f"{date}, {day_files}, {day_hours_data:.2f} \n")
-                ## if no door position specified, include door position for each date in txt
-                elif door == "n":
-                    file.write(f"{date}, {day_files}, {day_hours_data:.2f}, {door_position} \n")
+                if door == door_position:
+                    dates_qd.append((date, day_files, day_hours_data, door_position))
+                    total_days_qd += 1
+                    total_files_qd += day_files
+                    total_hours_qd += day_hours_data
+                    total_extmoon_hours_qd += (day_extmoon_files * 97) / 3600
+                    total_open_hours_qd += (day_open_files * 97) / 3600
+                    total_closed_hours_qd += (day_closed_files * 97) / 3600
+                # if door == "e":
+                #     if door_position == "e":
+                #         # file.write(f"{date}, {day_files}, {day_hours_data:.2f} \n")
+                #         dates_qd.append(date)
+                #         total_days_qd += 1
+                #         total_files_qd += day_files
+                #         total_hours_qd += day_hours_data
+                #         total_extmoon_hours_qd += (day_extmoon_files * 97) / 3600
+                #         total_open_hours_qd += (day_open_files * 97) / 3600
+                #         total_closed_hours_qd += (day_closed_files * 97) / 3600
+                # elif door == "o":
+                #     if door_position == "o":
+                #         dates_qd.append(date)
+                #         total_days_qd += 1
+                #         total_files_qd += day_files
+                #         total_hours_qd += day_hours_data
+                #         total_open_hours_qd += (day_open_files * 97) / 3600
+                #         total_closed_hours_qd += (day_closed_files * 97) / 3600
+                #         total_extmoon_hours_qd = 0
+                #         # file.write(f"{date}, {day_files}, {day_hours_data:.2f} \n")
+                # elif door == "c":
+                #     if door_position == "c":
+                #         dates_qd.append(date)
+                #         total_days_qd += 1
+                #         total_files_qd += day_files
+                #         total_hours_qd += day_hours_data
+                #         total_closed_hours_qd += (day_closed_files * 97) / 3600
+                #         total_open_hours_qd = 0
+                #         total_extmoon_hours_qd = 0
+                # return dates_qd, door_position, total_days_qd, total_files_qd, total_hours_qd, total_open_hours_qd, total_closed_hours_qd, total_extmoon_hours_qd
+            
+            if door != "":
+                    ## write total days, files, and hours data to txt
+                file.write(f"Total Days: {total_days_qd} days \n")
+                file.write(f"Total Files: {total_files_qd} files \n")
+                file.write(f"Total Hours Data: {total_hours_qd:.1f} hours \n")
+                ## write total open, closed, ext moon hours data to txt
+                file.write(f"Door Open Hours Data: {total_open_hours_qd:.1f} hours \n")
+                file.write(f"Extended Moon Hours Data: {total_extmoon_hours_qd:.1f} hours \n")
+                file.write(f"Door Closed Hours Data: {total_closed_hours_qd:.1f} hours \n")
+                file.write("listing dates \n")
+                file.write("\n")
+                file.write("Date, Files, Hours, Door Position \n")
+                for date in dates_qd:
+                    file.write(f"{date[0]}, {date[1]}, {date[2]:.2f}, {date[3]} \n")
+
+            
         
+                        # file.write(f"{date}, {day_files}, {day_hours_data:.2f} \n")
+                ## if no door position specified, include door position for each date in txt
+                # elif door == "":
+                #     file.write(f"{date}, {day_files}, {day_hours_data:.2f}, {door_position} \n")
+                    ## write total days, files, and hours data to txt
+    
     print("Query Files Data written to dbQuery.txt")
     
 
