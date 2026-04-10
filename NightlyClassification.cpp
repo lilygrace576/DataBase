@@ -22,74 +22,68 @@ if(mount !="n"){
     outDir = Form("%s/DataAnalysis/AncillaryData/file_database/NightlyClassificationScripts/Output/",mount.c_str());// update output dir
     // std::cout << outDir << std::endl;
 }
-// } else {
-//     dataDir = Form("%sDataAnalysis/MergedData/Output/", mount.c_str());
-//     std::cout << dataDir << std::endl;
-//     outDir = Form("%s",mount.c_str());// update output dir
-//     std::cout << outDir << std::endl;
-// }
+
 // Create txt file for Operation Mode 0; Intrigs
-// std::ofstream outputFile0("OpMode0.txt", std::ios::out | std::ios::trunc);
-std::ofstream outputFile0(outDir + "intrigs.txt");
-if (outputFile0.is_open()) {
-    outputFile0 << "Operation Mode 0: Intrigs" << "\n";
-    outputFile0 << "File Name, " << "Test Events, " << "HLED Events, " << "Forced Events, " << "Avg Rounded Bias Voltage, " << "Max Current" << "\n"; 
-    // outputFile0 << "File Name, " << "Event Number, " << "Data Type, " << "Bias Voltage (V), " << "Current (mA)" << "\n"; 
-    // outputFile0.close();
-} else {
-    std::cerr << "Unable to open file for writing." << std::endl;
-}
+// std::ofstream outputFile0(outDir + "intrigs.txt");
+// if (outputFile0.is_open()) {
+//     outputFile0 << "Operation Mode 0: Intrigs" << "\n";
+//     outputFile0 << "File Name, " << "Test Events, " << "HLED Events, " << "Forced Events, " << "Avg Rounded Bias Voltage, " << "Max Current" << "\n"; 
+//     // outputFile0 << "File Name, " << "Event Number, " << "Data Type, " << "Bias Voltage (V), " << "Current (mA)" << "\n"; 
+//     // outputFile0.close();
+// } else {
+//     std::cerr << "Unable to open file for writing." << std::endl;
+// }
 
 // Create txt file for Operation Mode 1; Normal
 // std::ofstream outputFile1("OpMode1.txt", std::ios::out | std::ios::trunc);
-std::ofstream outputFile1(outDir + "NormalOps.txt");
-if (outputFile1.is_open()) {
-    outputFile1 << "Operation Mode 1: Normal" << "\n";
-    outputFile1 << "File Name, " << "Test Events, " << "HLED Events, " << "Forced Events, " << "Avg Rounded Bias Voltage, " << "Max Current" << "\n"; 
-    // outputFile1 << "File Name, " << "Event Number, " << "Data Type, " << "Bias Voltage (V), " << "Current (mA)" << "\n"; 
-    // outputFile1.close();
-} else {
-    std::cerr << "Unable to open file for writing." << std::endl;
-}
+// std::ofstream outputFile1(outDir + "NormalOps.txt");
+// if (outputFile1.is_open()) {
+//     outputFile1 << "Operation Mode 1: Normal" << "\n";
+//     outputFile1 << "File Name, " << "Test Events, " << "HLED Events, " << "Forced Events, " << "Avg Rounded Bias Voltage, " << "Max Current" << "\n"; 
+//     // outputFile1 << "File Name, " << "Event Number, " << "Data Type, " << "Bias Voltage (V), " << "Current (mA)" << "\n"; 
+//     // outputFile1.close();
+// } else {
+//     std::cerr << "Unable to open file for writing." << std::endl;
+// }
 
 // Create txt file for Operation Mode 2; Extended Moon
 // std::ofstream outputFile2("OpMode2.txt", std::ios::out | std::ios::trunc);
-std::ofstream outputFile2(outDir + "ExtMoonOps.txt");
-if (outputFile2.is_open()) {
-    outputFile2 << "Operaion Mode 2: Extended Moon" << "\n";
-    outputFile2 << "File Name, " << "Test Events, " << "HLED Events, " << "Forced Events, " << "Avg Rounded Bias Voltage, " << "Max Current" << "\n"; 
-    // outputFile2 << "File Name, " << "Event Number, " << "Data Type, " << "Bias Voltage (V), " << "Current (mA)" << "\n"; 
-    // outputFile2.close();
-} else {
-    std::cerr << "Unable to open file for writing." << std::endl;
-}
+// std::ofstream outputFile2(outDir + "ExtMoonOps.txt");
+// if (outputFile2.is_open()) {
+//     outputFile2 << "Operaion Mode 2: Extended Moon" << "\n";
+//     outputFile2 << "File Name, " << "Test Events, " << "HLED Events, " << "Forced Events, " << "Avg Rounded Bias Voltage, " << "Max Current" << "\n"; 
+//     // outputFile2 << "File Name, " << "Event Number, " << "Data Type, " << "Bias Voltage (V), " << "Current (mA)" << "\n"; 
+//     // outputFile2.close();
+// } else {
+//     std::cerr << "Unable to open file for writing." << std::endl;
+// }
 
 // Create txt file for Operation Mode3; Door Closed
 // std::ofstream outputFile3("OpMode3.txt", std::ios::out | std::ios::trunc);
-std::ofstream outputFile3(outDir + "DoorClosed.txt");
-if (outputFile3.is_open()) {
-    outputFile3 << "Operation Mode 3: Door Down" << "\n";
-    outputFile3 << "File Name, " << "Test Events, " << "HLED Events, " << "Forced Events, " << "Avg Rounded Bias Voltage, " << "Max Current" << "\n"; 
-    // outputFile3 << "File Name, " << "Event Number, " << "Data Type, " << "Bias Voltage (V), " << "Current (mA)" << "\n"; 
-    // outputFile3.close();
-} else {
-    std::cerr << "Unable to open file for writing." << std::endl;
-}
+// std::ofstream outputFile3(outDir + "DoorClosed.txt");
+// if (outputFile3.is_open()) {
+//     outputFile3 << "Operation Mode 3: Door Down" << "\n";
+//     outputFile3 << "File Name, " << "Test Events, " << "HLED Events, " << "Forced Events, " << "Avg Rounded Bias Voltage, " << "Max Current" << "\n"; 
+//     // outputFile3 << "File Name, " << "Event Number, " << "Data Type, " << "Bias Voltage (V), " << "Current (mA)" << "\n"; 
+//     // outputFile3.close();
+// } else {
+//     std::cerr << "Unable to open file for writing." << std::endl;
+// }
 
 // Create txt file for Data not being sorted into other files
 // std::ofstream outputFile4("Other.txt", std::ios::out | std::ios::trunc);
-std::ofstream outputFile4(outDir + "Other.txt");
-if (outputFile4.is_open()) {
-    outputFile4 << "Other" << "\n";
-    outputFile4 << "File Name, " << "Test Events, " << "HLED Events, " << "Forced Events, " << "Avg Rounded Bias Voltage, " << "Max Current" << "\n"; 
-    // outputFile4 << "File Name, " << "Event Number, " << "Data Type, " << "Bias Voltage (V), " << "Current (mA)" << "\n"; 
-    // outputFile4.close();
-} else {
-    std::cerr << "Unable to open file for writing." << std::endl;
-}
+// std::ofstream outputFile4(outDir + "Other.txt");
+// if (outputFile4.is_open()) {
+//     outputFile4 << "Other" << "\n";
+//     outputFile4 << "File Name, " << "Test Events, " << "HLED Events, " << "Forced Events, " << "Avg Rounded Bias Voltage, " << "Max Current" << "\n"; 
+//     // outputFile4 << "File Name, " << "Event Number, " << "Data Type, " << "Bias Voltage (V), " << "Current (mA)" << "\n"; 
+//     // outputFile4.close();
+// } else {
+//     std::cerr << "Unable to open file for writing." << std::endl;
+// }
 
 // Create txt file for data from each file from 1 night
-std::ofstream outputFile5(outDir + "AllFiles.txt");
+std::ofstream outputFile5(outDir + "AllFiles_" + folString.c_str() + ".txt");
 if (outputFile5.is_open()) {
     outputFile5 << "File Name, " << "OpMode, " << "Test Events, " << "HLED Events, " << "Forced Events" << "\n"; 
 } else {
@@ -247,29 +241,29 @@ for(int f = 0; f<static_cast<int>(fileNamesVec.size()); f++){
         // if ((fileBV[0] == 42.0) && (fileCurrent[0] <= 3.7)){
         if ((nEntries==0) && ((fileBV[0] == 42.0) && (roundFileCurrent <= 3.7))){
             OpMode = 0;
-            outputFile0 << std::fixed << std::setprecision(1);
-            outputFile0 << fileNamesVec[f].c_str() << ", "  << nEntries << ", " << nEntriesHLED << ", " << 0 << ", " << fileBV[0] << ", " << roundFileCurrent << "\n";
+            // outputFile0 << std::fixed << std::setprecision(1);
+            // outputFile0 << fileNamesVec[f].c_str() << ", "  << nEntries << ", " << nEntriesHLED << ", " << 0 << ", " << fileBV[0] << ", " << roundFileCurrent << "\n";
             outputFile5 << fileNamesVec[f].c_str() << ", " << OpMode << ", " << nEntries << ", " << nEntriesHLED << ", " << 0 << "\n";
         }
         else if ((nEntries==0) && (fileBV[0] != 42.0)){
             OpMode = 6;
-            outputFile4 << std::fixed << std::setprecision(1);
-            outputFile4 << fileNamesVec[f].c_str() << ", "  << nEntries << ", " << nEntriesHLED << ", " << 0 << ", " << fileBV[0] << ", " << roundFileCurrent << "\n";
+            // outputFile4 << std::fixed << std::setprecision(1);
+            // outputFile4 << fileNamesVec[f].c_str() << ", "  << nEntries << ", " << nEntriesHLED << ", " << 0 << ", " << fileBV[0] << ", " << roundFileCurrent << "\n";
             outputFile5 << fileNamesVec[f].c_str() << ", " << OpMode << ", " << nEntries << ", " << nEntriesHLED << ", " << 0 << "\n";
         } else if ((fileBV[0] == 44.0) && (roundFileCurrent > 4.0)){
             OpMode = 1;
-            outputFile1 << std::fixed << std::setprecision(1);
-            outputFile1 << fileNamesVec[f].c_str() << ", "  << nEntries << ", " << nEntriesHLED << ", " << 0 << ", " << fileBV[0] << ", " << roundFileCurrent << "\n";
+            // outputFile1 << std::fixed << std::setprecision(1);
+            // outputFile1 << fileNamesVec[f].c_str() << ", "  << nEntries << ", " << nEntriesHLED << ", " << 0 << ", " << fileBV[0] << ", " << roundFileCurrent << "\n";
             outputFile5 << fileNamesVec[f].c_str() << ", " << OpMode << ", " << nEntries << ", " << nEntriesHLED << ", " << 0 << "\n";
         } else if ((fileBV[0] == 41.5) && (roundFileCurrent >= 3.5)){
             OpMode = 2;
-            outputFile2 << std::fixed << std::setprecision(1);
-            outputFile2 << fileNamesVec[f].c_str() << ", "  << nEntries << ", " << nEntriesHLED << ", " << 0 << ", " << fileBV[0] << ", " << roundFileCurrent << "\n";
+            // outputFile2 << std::fixed << std::setprecision(1);
+            // outputFile2 << fileNamesVec[f].c_str() << ", "  << nEntries << ", " << nEntriesHLED << ", " << 0 << ", " << fileBV[0] << ", " << roundFileCurrent << "\n";
             outputFile5 << fileNamesVec[f].c_str() << ", " << OpMode << ", " << nEntries << ", " << nEntriesHLED << ", " << 0 << "\n";
         } else if ((fileBV[0] == 44.0) && (roundFileCurrent <= 4.0)){
             OpMode = 3;
-            outputFile3 << std::fixed << std::setprecision(1);
-            outputFile3 << fileNamesVec[f].c_str() << ", "  << nEntries << ", " << nEntriesHLED << ", " << 0 << ", " << fileBV[0] << ", " << roundFileCurrent << "\n";
+            // outputFile3 << std::fixed << std::setprecision(1);
+            // outputFile3 << fileNamesVec[f].c_str() << ", "  << nEntries << ", " << nEntriesHLED << ", " << 0 << ", " << fileBV[0] << ", " << roundFileCurrent << "\n";
             outputFile5 << fileNamesVec[f].c_str() << ", " << OpMode << ", " << nEntries << ", " << nEntriesHLED << ", " << 0 << "\n";
         }
     }
@@ -277,8 +271,8 @@ for(int f = 0; f<static_cast<int>(fileNamesVec.size()); f++){
     else {
         // std::cout << "different bv and current values" << std::endl;
         OpMode = 6;
-        outputFile4 << std::fixed << std::setprecision(1);
-        outputFile4 << fileNamesVec[f].c_str() << ", "  << nEntries << ", " << nEntriesHLED << ", " << 0 << ", " << fileBV[0] << ", " << roundFileCurrent << "\n";
+        // outputFile4 << std::fixed << std::setprecision(1);
+        // outputFile4 << fileNamesVec[f].c_str() << ", "  << nEntries << ", " << nEntriesHLED << ", " << 0 << ", " << fileBV[0] << ", " << roundFileCurrent << "\n";
         outputFile5 << fileNamesVec[f].c_str() << ", " << OpMode << ", " << nEntries << ", " << nEntriesHLED << ", " << 0 << "\n";
     } 
 
@@ -292,11 +286,11 @@ for(int f = 0; f<static_cast<int>(fileNamesVec.size()); f++){
     }   // close for file in filesNamesVec
     // file->Close();
 
-outputFile0.close();
-outputFile1.close();
-outputFile2.close();
-outputFile3.close();
-outputFile4.close();
+// outputFile0.close();
+// outputFile1.close();
+// outputFile2.close();
+// outputFile3.close();
+// outputFile4.close();
 outputFile5.close();
 
 }   // close else (fileNamesVec.size() > 1)
